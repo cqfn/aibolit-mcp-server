@@ -10,3 +10,6 @@ REUSE.toml
 eslint.config.mjs
 jest.config.ts
 renovate.json
+coverage/
+dist/
+temp/
