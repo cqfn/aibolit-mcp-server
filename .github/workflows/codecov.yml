@@ -13,6 +13,10 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13.2"
+      - run: pip install aibolit
       - run: npm install
       - run: make
       - uses: codecov/codecov-action@v5
