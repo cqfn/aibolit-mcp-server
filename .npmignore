@@ -1,7 +1,4 @@
 .github/
-fakes/
-fixtures/
-helpers/
 test/
 .0pdd.yml
 .gitattributes
