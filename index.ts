@@ -9,10 +9,15 @@ import { program } from 'commander';
 import './src/tools';
 
 program
-  .option('--version');
+  .option('--version')
+  .option('--help');
 program.parse();
 if (program.opts().version) {
   console.log('0.0.0');
+  process.exit(0);
+}
+if (program.opts().help) {
+  console.log('More details here: https://github.com/cqfn/aibolit-mcp-server');
   process.exit(0);
 }
 

@@ -9,4 +9,9 @@ describe('index', () => {
     const stdout = execSync('./index.ts --version').toString();
     expect(stdout).toMatch(/^[0-9]+\.[0-9]+\.[0-9]+\n$/);
   });
+
+  test('prints help', async (): Promise<void> => {
+    const stdout = execSync('./index.ts --help').toString();
+    expect(stdout).toContain('github.com');
+  });
 });

@@ -28,6 +28,7 @@ it:
 		exit 1
 	fi
 	npx . --version
+	npx . --help
 
 tsc: $(TSS)
 	npx -y tsc --target es2020 --module nodenext --outDir dist $(TSS)
