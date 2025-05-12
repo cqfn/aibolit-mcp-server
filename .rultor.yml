@@ -5,7 +5,7 @@
 docker:
   image: yegor256/ruby
 assets:
-  npmrc: cqfn/cqfn-secrets#npmrc
+  npmrc: yegor256/cqfn-secrets#npmrc
 install: |
   sudo /usr/bin/install-node.sh
   npm install --no-color
