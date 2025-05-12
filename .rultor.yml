@@ -3,13 +3,14 @@
 ---
 # yamllint disable rule:line-length
 docker:
-  image: yegor256/ruby
+  image: yegor256/python
 assets:
   npmrc: yegor256/cqfn-secrets#npmrc
 install: |
   sudo /usr/bin/install-node.sh
   npm install --no-color
   pdd -f /dev/null -v
+  pip install aibolit javalang
 release:
   pre: false
   script: |

@@ -15,7 +15,7 @@ Sadly, it may often overlook important problems.
 AI agents, by design, pay more attention to cosmetic issues,
   which are "low-hanging fruits" for them.
 This [MCP] server will give your agent a hint:
-  what are the **most critical design issue** in the code.
+  what is the **most critical design issue** in the code.
 Then, the agent will refactor it and fix the issue.
 
 First, install [Node], [Npm], [Python], [Pip], and [aibolit]:
@@ -50,7 +50,7 @@ If everything builds correctly after your changes, submit a pull request.
 [Npm]: https://www.npmjs.com/
 [Node]: https://nodejs.org/en
 [aibolit]: https://github.com/cqfn/aibolit
-[Claude Code]:https://github.com/anthropics/claude-code
+[Claude Code]: https://github.com/anthropics/claude-code
 [Cursor]: https://www.cursor.com/
 [Windsurf]: https://windsurf.com/editor
 [GNU make]: https://www.gnu.org/software/make/
