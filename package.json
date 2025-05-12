@@ -1,0 +1,43 @@
+{
+  "author": "Yegor Bugayenko <yegor256@gmail.com> (https://www.yegor256.com/)",
+  "bin": {
+    "index": "./index.ts"
+  },
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.10.2"
+  },
+  "description": "MCP Server for Aibolit",
+  "devDependencies": {
+    "@jest/globals": "^29.7.0",
+    "@types/jest": "^29.5.14",
+    "@typescript-eslint/eslint-plugin": "^8.31.1",
+    "@typescript-eslint/parser": "^8.31.1",
+    "eslint": "^9.24.0",
+    "jest": "^29.7.0",
+    "ts-jest": "^29.3.2",
+    "ts-node": "^10.9.2",
+    "tsx": "^4.19.4",
+    "typescript": "^5.8.3",
+    "typescript-eslint": "^8.31.1"
+  },
+  "engines": {
+    "node": ">=18.0",
+    "npm": ">8.0"
+  },
+  "homepage": "https://github.com/cqfn/aibolit-mcp-server",
+  "keywords": [
+    "mcp",
+    "aibolit",
+    "ai"
+  ],
+  "license": "MIT",
+  "main": "index",
+  "name": "aibolit-mcp-server",
+  "os": [
+    "darwin",
+    "linux",
+    "win32"
+  ],
+  "repository": "cqfn/aibolit-mcp-server",
+  "version": "0.0.0"
+}

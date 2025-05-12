@@ -1,0 +1,25 @@
+# SPDX-FileCopyrightText: Copyright (c) 2025 Yegor Bugayenko
+# SPDX-License-Identifier: MIT
+---
+# yamllint disable rule:line-length
+docker:
+  image: yegor256/ruby
+assets:
+  npmrc: yegor256/home#assets/npmrc
+install: |
+  sudo /usr/bin/install-node.sh
+  npm install --no-color
+  pdd -f /dev/null -v
+release:
+  pre: false
+  script: |
+    [[ "${tag}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || exit -1
+    sed -i "s/0\.0\.0/${tag}/" package.json
+    sed -i "s/0\.0\.0/${tag}/" src/server.ts
+    make
+    git commit -am "set version to ${tag}"
+    chmod 600 ../npmrc
+    npm publish --no-color --userconfig=../npmrc
+merge:
+  script: |-
+    make
