@@ -27,6 +27,7 @@ it:
 		./index.ts
 		exit 1
 	fi
+	npx . --version
 
 tsc: $(TSS)
 	npx -y tsc --target es2020 --module nodenext --outDir dist $(TSS)
