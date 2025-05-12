@@ -9,6 +9,6 @@ export const server = new McpServer(
       tools: {}
     },
     name: 'aibolit-mcp-server',
-    version: '0.0.0'
+    version: '0.0.2'
   },
 );
