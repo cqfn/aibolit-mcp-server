@@ -53,6 +53,5 @@ If everything builds correctly after your changes, submit a pull request.
 [Cursor]: https://www.cursor.com/
 [Windsurf]: https://windsurf.com/editor
 [GNU make]: https://www.gnu.org/software/make/
-[GitHub MCP server]: https://github.com/github/github-mcp-server
 [Python]: https://www.python.org/
 [Pip]: https://pypi.org/project/pip/
