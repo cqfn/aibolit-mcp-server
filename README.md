@@ -24,10 +24,11 @@ First, install [Node], [Npm], [Python], [Pip], and [aibolit]:
 aibolit --version
 ```
 
-Then, add this [MCP] server to [Claude Code]:
+Then, add this [MCP] server to [Claude Code]
+(or simply edit `~/claude.json`, but it's not recommended):
 
 ```bash
-claude mcp add aibolit npx cqfn/aibolit-mcp-server
+claude mcp add aibolit npx aibolit-mcp-server
 ```
 
 Then, restart [Claude Code] and ask it something along these lines:

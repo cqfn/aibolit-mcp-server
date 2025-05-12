@@ -1,0 +1,15 @@
+.github/
+fakes/
+fixtures/
+helpers/
+test/
+.0pdd.yml
+.gitattributes
+.pdd
+.rultor.yml
+.xcop
+Makefile
+REUSE.toml
+eslint.config.mjs
+jest.config.ts
+renovate.json
