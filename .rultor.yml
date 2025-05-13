@@ -10,7 +10,7 @@ install: |
   sudo /usr/bin/install-node.sh
   npm install --no-color
   pdd -f /dev/null -v
-  pip install aibolit javalang
+  pip3 install aibolit javalang
   aibolit --version
 release:
   pre: false
