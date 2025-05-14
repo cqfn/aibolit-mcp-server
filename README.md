@@ -3,7 +3,7 @@
 [![DevOps By Rultor.com](https://www.rultor.com/b/cqfn/aibolit-mcp-server)](https://www.rultor.com/p/cqfn/aibolit-mcp-server)
 
 [![make](https://github.com/cqfn/aibolit-mcp-server/actions/workflows/make.yml/badge.svg)](https://github.com/cqfn/aibolit-mcp-server/actions/workflows/make.yml)
-[![codecov](https://codecov.io/gh/cqfn/aibolit-mcp-server/branch/master/graph/badge.svg)](https://codecov.io/gh/cqfn/aibolit-mcp-server)
+[![codecov](https://codecov.io/gh/cqfn/aibolit-mcp-server/graph/badge.svg?token=3dr2Il91wJ)](https://codecov.io/gh/cqfn/aibolit-mcp-server)
 [![Hits-of-Code](https://hitsofcode.com/github/cqfn/aibolit-mcp-server)](https://hitsofcode.com/view/github/cqfn/aibolit-mcp-server)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/aibolit-mcp-server/blob/master/LICENSE.txt)
 
