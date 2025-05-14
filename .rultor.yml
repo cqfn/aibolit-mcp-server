@@ -10,7 +10,6 @@ install: |
   sudo /usr/bin/install-node.sh
   npm install --no-color
   pdd -f /dev/null -v
-  ls -al /usr/local/python-3.13.3
   pip3 install aibolit javalang
   aibolit --version
 release:
