@@ -13,7 +13,7 @@ program
   .option('--help');
 program.parse();
 if (program.opts().version) {
-  console.log('0.0.0');
+  console.log('0.0.3');
   process.exit(0);
 }
 if (program.opts().help) {
