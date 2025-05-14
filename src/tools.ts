@@ -7,7 +7,7 @@ import { to_gpt } from './to_gpt';
 import { server } from './server';
 
 server.tool(
-  'find_most_critical_design_issue',
+  'find_the_most_critical_design_issue',
   to_gpt(
     `
     Analyze one Java file.

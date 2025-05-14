@@ -11,7 +11,7 @@ describe('resources', () => {
       id: 1,
       method: 'tools/call',
       params: {
-        name: 'find_most_critical_design_issue',
+        name: 'find_the_most_critical_design_issue',
         arguments: {
           path: 'Foo.java'
         }
