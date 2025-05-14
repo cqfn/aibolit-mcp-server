@@ -11,6 +11,7 @@ install: |
   npm install --no-color
   pdd -f /dev/null -v
   env
+  ls /usr/local/bin
   pip3 install aibolit javalang
   aibolit --version
 release:
