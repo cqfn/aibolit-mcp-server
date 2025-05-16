@@ -5,12 +5,14 @@
   },
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.10.2",
-    "commander": "^13.1.0"
+    "commander": "^13.1.0",
+    "semver": "^7.7.2"
   },
   "description": "MCP Server for Aibolit",
   "devDependencies": {
     "@jest/globals": "^29.7.0",
     "@types/jest": "^29.5.14",
+    "@types/semver": "^7.7.0",
     "@typescript-eslint/eslint-plugin": "^8.31.1",
     "@typescript-eslint/parser": "^8.31.1",
     "eslint": "^9.24.0",
@@ -40,5 +42,9 @@
     "win32"
   ],
   "repository": "cqfn/aibolit-mcp-server",
+  "scripts": {
+    "lint": "eslint",
+    "test": "jest"
+  },
   "version": "0.0.0"
 }

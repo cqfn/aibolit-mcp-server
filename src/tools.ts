@@ -3,6 +3,7 @@
 
 import { z } from 'zod';
 import { aibolit } from './aibolit';
+import { safe } from './safe';
 import { to_gpt } from './to_gpt';
 import { server } from './server';
 
@@ -23,7 +24,7 @@ server.tool(
   async ({ path }) => {
     return ({
       content: [{
-        text: await aibolit(path),
+        text: await safe(() => aibolit(path)),
         type: 'text'
       }]
     });
