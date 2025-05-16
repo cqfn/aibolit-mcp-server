@@ -34,23 +34,21 @@ export const aibolit = async function(path: string): Promise<string> {
   }
   const warns = execSync(
     `
-    /bin/bash -c "
-      set -o pipefail;
-      (python3 -m aibolit check --filenames ${path} || true) | cut -f 2- -d ' '
-    "
+    /bin/bash -c "set -o pipefail; (python3 -m aibolit check --full --filenames ${path} || true)"
     `
   ).toString();
   const lines = warns.trim().split('\n').filter(line => line.trim());
   const parsed = lines.map(line => {
-    const match = line.match(/^(.+?)\s*\(P\d+:\s*(\d+(?:\.\d+)?)\)$/);
+    const match = line.match(/^.+?\[(\d+)\]:\s(.+?)\s\(P\d+:\s(\d+(?:\.\d+)?)\)$/);
     if (match) {
       return {
-        name: match[1].trim(),
-        value: parseFloat(match[2])
+        line: parseFloat(match[1]),
+        name: match[2].trim(),
+        value: parseFloat(match[3])
       };
     }
     return null;
-  }).filter(item => item !== null) as { name: string; value: number }[];
+  }).filter(item => item !== null) as { line: number, name: string; value: number }[];
   const sorted = parsed.sort((a, b) => b.value - a.value);
   const top = sorted[0];
   if (!top) {
@@ -59,7 +57,7 @@ export const aibolit = async function(path: string): Promise<string> {
   return to_gpt(
     `
     The most important design issue in this Java file (${path})
-    is the following: "${top.name}".
+    is on the line no.${top.line}: "${top.name}".
     It needs immediate refactoring if you want to increase code maintainability.
     `
   );

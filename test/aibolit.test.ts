@@ -60,7 +60,8 @@ describe('aibolit', () => {
       `
     );
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-    mockExecSync.mockReturnValueOnce(Buffer.from('Missing final keyword (P13: 5.0)\n'));
+    mockExecSync.mockReturnValueOnce(
+      Buffer.from('Test.java[44]: Missing final keyword (P13: 5.0)\n'));
     try {
       const issue = await aibolit(path);
       expect(issue).not.toContain('Your code is perfect');
@@ -76,109 +77,107 @@ describe('aibolit', () => {
     expect(result).toBe(`File does not exist: ${path}`);
   });
 
-  describe('check_version', () => {
-    test('throws when aibolit outputs invalid format', async () => {
-      mockExecSync.mockReturnValue(Buffer.from('invalid output'));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toBe('Probably Aibolit is not installed: "invalid output"');
-      }
-    });
+  test('throws when aibolit outputs invalid format', async () => {
+    mockExecSync.mockReturnValue(Buffer.from('invalid output'));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toBe('Probably Aibolit is not installed: "invalid output"');
+    }
+  });
 
-    test('throws when version pattern not found', async () => {
-      mockExecSync.mockReturnValue(Buffer.from('aibolit no-version-here\n'));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toContain('Probably Aibolit is not installed');
-      }
-    });
+  test('throws when version pattern not found', async () => {
+    mockExecSync.mockReturnValue(Buffer.from('aibolit no-version-here\n'));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toContain('Probably Aibolit is not installed');
+    }
+  });
 
-    test('throws when version is too old', async () => {
-      mockExecSync.mockReturnValue(Buffer.from('aibolit 1.2.0\n'));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toContain('is not recent enough');
-        expect(error).toContain('older than 1.3.0');
-      }
-    });
+  test('throws when version is too old', async () => {
+    mockExecSync.mockReturnValue(Buffer.from('aibolit 1.2.0\n'));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toContain('is not recent enough');
+      expect(error).toContain('older than 1.3.0');
+    }
+  });
 
-    test('executes normally when version is exactly required', async () => {
-      mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-      mockExecSync.mockReturnValueOnce(Buffer.from(''));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      const result = await aibolit(path);
-      expect(result).toBe('Your code is perfect');
-    });
+  test('executes normally when version is exactly required', async () => {
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    const result = await aibolit(path);
+    expect(result).toBe('Your code is perfect');
+  });
 
-    test('executes normally when version is newer than required', async () => {
-      mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.4.0\n'));
-      mockExecSync.mockReturnValueOnce(Buffer.from(''));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      const result = await aibolit(path);
-      expect(result).toBe('Your code is perfect');
-    });
+  test('executes normally when version is newer than required', async () => {
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.4.0\n'));
+    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    const result = await aibolit(path);
+    expect(result).toBe('Your code is perfect');
+  });
 
-    test('throws when execSync fails completely', async () => {
-      mockExecSync.mockImplementation(() => {
-        throw new Error('Command failed');
-      });
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toBeInstanceOf(Error);
-        expect((error as Error).message).toBe('Command failed');
-      }
+  test('throws when execSync fails completely', async () => {
+    mockExecSync.mockImplementation(() => {
+      throw new Error('Command failed');
     });
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toBeInstanceOf(Error);
+      expect((error as Error).message).toBe('Command failed');
+    }
+  });
 
-    test('handles empty version output', async () => {
-      mockExecSync.mockReturnValue(Buffer.from(''));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toContain('Probably Aibolit is not installed');
-      }
-    });
+  test('handles empty version output', async () => {
+    mockExecSync.mockReturnValue(Buffer.from(''));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toContain('Probably Aibolit is not installed');
+    }
+  });
 
-    test('handles version with extra spaces', async () => {
-      mockExecSync.mockReturnValue(Buffer.from('aibolit  1.3.0  \n'));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      try {
-        await aibolit(path);
-        fail('Should have thrown');
-      } catch (error) {
-        expect(error).toContain('Probably Aibolit is not installed');
-      }
-    });
+  test('handles version with extra spaces', async () => {
+    mockExecSync.mockReturnValue(Buffer.from('aibolit  1.3.0  \n'));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    try {
+      await aibolit(path);
+      fail('Should have thrown');
+    } catch (error) {
+      expect(error).toContain('Probably Aibolit is not installed');
+    }
+  });
 
-    test('handles aibolit output with invalid warning format', async () => {
-      mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-      mockExecSync.mockReturnValueOnce(
-        Buffer.from('Invalid warning format\nAnother invalid line\n'));
-      const path = '/tmp/test.java';
-      writeFileSync(path, 'public class Test {}');
-      const result = await aibolit(path);
-      expect(result).toBe('Your code is perfect');
-    });
+  test('handles aibolit output with invalid warning format', async () => {
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecSync.mockReturnValueOnce(
+      Buffer.from('Invalid warning format\nAnother invalid line\n'));
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    const result = await aibolit(path);
+    expect(result).toBe('Your code is perfect');
   });
 });
