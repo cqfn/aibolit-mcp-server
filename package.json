@@ -42,8 +42,8 @@
   ],
   "repository": "cqfn/aibolit-mcp-server",
   "scripts": {
-    "test": "jest",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test": "jest"
   },
   "version": "0.0.0"
 }

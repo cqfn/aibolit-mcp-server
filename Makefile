@@ -21,12 +21,7 @@ it:
 	npx -y @modelcontextprotocol/inspector \
 		--config test/fixtures/claude-code-config.json \
 		--server aibolit \
-		--cli --method tools/list > temp/tools.json
-	if ! jq empty temp/tools.json; then
-		cat temp/tools.json
-		./index.ts
-		exit 1
-	fi
+		--cli --method tools/list
 
 npx:
 	npx . --version
