@@ -42,4 +42,8 @@ describe('safe', () => {
     const result = await safe(async () => obj);
     expect(result).toEqual(obj);
   });
+<<<<<<< Updated upstream
 });
+=======
+});
+>>>>>>> Stashed changes

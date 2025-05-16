@@ -41,5 +41,8 @@
     "win32"
   ],
   "repository": "cqfn/aibolit-mcp-server",
+  "scripts": {
+    "test": "jest"
+  },
   "version": "0.0.0"
 }
