@@ -21,6 +21,12 @@ function check_version(): void {
   }
 }
 
+/**
+ * Analyzes a Java file using Aibolit to find the most critical design issue.
+ * Runs Aibolit static analyzer and returns the highest priority code quality issue.
+ * @param path - The file path to the Java file to analyze
+ * @returns A promise that resolves to a formatted message describing the most critical issue
+ */
 export const aibolit = async function(path: string): Promise<string> {
   check_version();
   if (!fs.existsSync(path)) {
