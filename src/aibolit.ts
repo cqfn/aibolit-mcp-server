@@ -7,30 +7,30 @@ import semver from 'semver';
 import { to_gpt } from './to_gpt';
 
 function check_version(): void {
-  const stdout = execSync(`/bin/bash -c "aibolit --version"`).toString();
-  const match = stdout.match(/^aibolit (\d+\.\d+\.\d+)\n$/);
+  const stdout = execSync(`/bin/bash -c "python3 -m aibolit --version"`).toString();
+  const match = stdout.match(/^[^ ]+ (\d+\.\d+\.\d+)\n$/);
   if (!match) {
     throw `Probably Aibolit is not installed: "${stdout}"`
   }
   const ver = match[1]
   const must = '1.3.0';
   if (semver.lt(ver, must)) {
-    throw `The version of aibolit installed on your computer (${ver})
+    throw `The version of "Aibolit" Pip package installed on your computer (${ver})
       is not recent enough (older than ${must}), try to install the latest one
       using "pip install aibolit==${must}".`;
   }
 }
 
 export const aibolit = async function(path: string): Promise<string> {
+  check_version();
   if (!fs.existsSync(path)) {
     return `File does not exist: ${path}`;
   }
-  check_version();
   const warns = execSync(
     `
     /bin/bash -c "
       set -o pipefail;
-      (aibolit check --filenames ${path} || true) | cut -f 2- -d ' '
+      (python3 -m aibolit check --filenames ${path} || true) | cut -f 2- -d ' '
     "
     `
   ).toString();
