@@ -6,7 +6,7 @@ import fs from 'fs';
 import semver from 'semver';
 import { to_gpt } from './to_gpt';
 
-function check_version() {
+function check_version(): void {
   const stdout = execSync(`/bin/bash -c "aibolit --version"`).toString();
   const match = stdout.match(/^aibolit (\d+\.\d+\.\d+)\n$/);
   if (!match) {
