@@ -8,6 +8,29 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 
 describe('aibolit', () => {
+  test('accepts perfect code', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
+    const path = join(tmp, 'Test.java');
+    writeFileSync(
+      path,
+      `
+      public final class Test {
+        public void method() {
+          int a = 1;
+          int b = 2;
+          int c = a + b;
+        }
+      }
+      `
+    );
+    try {
+      const issue = await aibolit(path);
+      expect(issue).toContain('Your code is perfect');
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
   test('detects simple issue', async () => {
     const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
     const path = join(tmp, 'Test.java');
@@ -25,7 +48,7 @@ describe('aibolit', () => {
     );
     try {
       const issue = await aibolit(path);
-      expect(issue).toContain('Your code is perfect');
+      expect(issue).not.toContain('Your code is perfect');
     } finally {
       rmSync(tmp, { recursive: true, force: true });
     }
