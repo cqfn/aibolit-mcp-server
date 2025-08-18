@@ -7,6 +7,8 @@
 [![Hits-of-Code](https://hitsofcode.com/github/cqfn/aibolit-mcp-server)](https://hitsofcode.com/view/github/cqfn/aibolit-mcp-server)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](https://github.com/cqfn/aibolit-mcp-server/blob/master/LICENSE.txt)
 
+[![Trust Score](https://archestra.ai/mcp-catalog/api/badge/quality/cqfn/aibolit-mcp-server)](https://archestra.ai/mcp-catalog/cqfn__aibolit-mcp-server)
+
 If you use AI agents, such as [Claude Code], [Cursor], or [Windsurf],
   for code refactoring, you may enjoy using this [MCP] server.
 Your AI agent, when you ask it to "make code better,"
