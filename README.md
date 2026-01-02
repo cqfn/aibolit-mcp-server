@@ -1,3 +1,5 @@
+[![MseeP.ai Security Assessment Badge](https://mseep.net/pr/cqfn-aibolit-mcp-server-badge.png)](https://mseep.ai/app/cqfn-aibolit-mcp-server)
+
 # MCP Server for Aibolit, Java Code Analyzer
 
 [![DevOps By Rultor.com](https://www.rultor.com/b/cqfn/aibolit-mcp-server)](https://www.rultor.com/p/cqfn/aibolit-mcp-server)
