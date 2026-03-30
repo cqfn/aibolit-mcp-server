@@ -56,3 +56,8 @@ If everything builds correctly after your changes, submit a pull request.
 [GNU make]: https://www.gnu.org/software/make/
 [Python]: https://www.python.org/
 [Pip]: https://pypi.org/project/pip/
+
+## Hosted deployment
+
+A hosted deployment is available on [Fronteir AI](https://fronteir.ai/mcp/cqfn-aibolit-mcp-server).
+
