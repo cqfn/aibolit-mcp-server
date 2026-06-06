@@ -21,17 +21,9 @@ function check_version(): void {
   }
 }
 
-/**
- * Analyzes a Java file using Aibolit to find the most critical design issue.
- * Runs Aibolit static analyzer and returns the highest priority code quality issue.
- * @param path - The file path to the Java file to analyze
- * @returns A promise that resolves to a formatted message describing the most critical issue
- */
-export const aibolit = async function(path: string): Promise<string> {
-  check_version();
-  if (!fs.existsSync(path)) {
-    return `File does not exist: ${path}`;
-  }
+type Issue = { line: number, name: string, value: number };
+
+function analyze(path: string): Issue[] {
   const warns = execSync(
     `
     /bin/bash -c "set -o pipefail; (python3 -m aibolit check --full --filenames ${path} || true)"
@@ -48,9 +40,22 @@ export const aibolit = async function(path: string): Promise<string> {
       };
     }
     return null;
-  }).filter(item => item !== null) as { line: number, name: string; value: number }[];
-  const sorted = parsed.sort((a, b) => b.value - a.value);
-  const top = sorted[0];
+  }).filter(item => item !== null) as Issue[];
+  return parsed.sort((a, b) => b.value - a.value);
+}
+
+/**
+ * Analyzes a Java file using Aibolit to find the most critical design issue.
+ * Runs Aibolit static analyzer and returns the highest priority code quality issue.
+ * @param path - The file path to the Java file to analyze
+ * @returns A promise that resolves to a formatted message describing the most critical issue
+ */
+export const aibolit = async function(path: string): Promise<string> {
+  check_version();
+  if (!fs.existsSync(path)) {
+    return `File does not exist: ${path}`;
+  }
+  const top = analyze(path)[0];
   if (!top) {
     return 'Your code is perfect';
   }
@@ -59,6 +64,34 @@ export const aibolit = async function(path: string): Promise<string> {
     The most important design issue in this Java file (${path})
     is on the line no.${top.line}: "${top.name}".
     It needs immediate refactoring if you want to increase code maintainability.
+    `
+  );
+}
+
+/**
+ * Analyzes a Java file using Aibolit and returns the top five most critical design issues.
+ * Lets an AI agent choose the most relevant one when several issues compete.
+ * @param path - The file path to the Java file to analyze
+ * @returns A promise that resolves to a formatted message listing up to five top issues
+ */
+export const aibolit_top = async function(path: string): Promise<string> {
+  check_version();
+  if (!fs.existsSync(path)) {
+    return `File does not exist: ${path}`;
+  }
+  const top = analyze(path).slice(0, 5);
+  if (top.length === 0) {
+    return 'Your code is perfect';
+  }
+  const items = top.map((issue, index) =>
+    `${index + 1}. line no.${issue.line}: "${issue.name}"`
+  ).join('\n');
+  return to_gpt(
+    `
+    The top ${top.length} design issues in this Java file (${path}),
+    ranked from most to least critical, are:
+    ${items}
+    Pick the one whose refactoring will most improve maintainability.
     `
   );
 }
