@@ -24,4 +24,24 @@ describe('resources', () => {
     const text = answer.result?.content?.[0].text;
     expect(text).not.toContain('HTTP error');
   });
+
+  test('returns content from the top-five tool', async (): Promise<void> => {
+    const answer = await once({
+      jsonrpc: '2.0' as const,
+      id: 2,
+      method: 'tools/call',
+      params: {
+        name: 'find_top_five_critical_design_issues',
+        arguments: {
+          path: 'Foo.java'
+        }
+      },
+    });
+    expect(answer).toHaveProperty('result');
+    expect(answer.result).toHaveProperty('content');
+    expect(Array.isArray(answer.result?.content)).toBe(true);
+    expect(answer.result?.content?.length).toBeGreaterThan(0);
+    const text = answer.result?.content?.[0].text;
+    expect(text).not.toContain('HTTP error');
+  });
 });

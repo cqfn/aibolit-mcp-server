@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { z } from 'zod';
-import { aibolit } from './aibolit';
+import { aibolit, aibolit_top } from './aibolit';
 import { safe } from './safe';
 import { to_gpt } from './to_gpt';
 import { server } from './server';
@@ -25,6 +25,29 @@ server.tool(
     return ({
       content: [{
         text: await safe(() => aibolit(path)),
+        type: 'text'
+      }]
+    });
+  }
+);
+
+server.tool(
+  'find_top_five_critical_design_issues',
+  to_gpt(
+    `
+    Analyze one Java file.
+    List the top five most serious design flaws, ranked from most to least critical.
+    Ignore cosmetic or minor issues.
+    Use the ranking to choose the one whose refactoring will best improve code quality.
+    Code quality means maintainability, readability, loose coupling, and high cohesion.
+    Point out each problem and where it sits in the file.
+    `
+  ),
+  { path: z.string() },
+  async ({ path }) => {
+    return ({
+      content: [{
+        text: await safe(() => aibolit_top(path)),
         type: 'text'
       }]
     });

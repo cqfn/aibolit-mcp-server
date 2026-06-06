@@ -2,7 +2,7 @@
 // SPDX-License-Identifier: MIT
 
 import { describe, expect, test, jest, beforeEach } from '@jest/globals';
-import { aibolit } from '../src/aibolit';
+import { aibolit, aibolit_top } from '../src/aibolit';
 import { mkdtempSync, writeFileSync, rmSync } from 'fs';
 import { join } from 'path';
 import { tmpdir } from 'os';
@@ -179,5 +179,75 @@ describe('aibolit', () => {
     writeFileSync(path, 'public class Test {}');
     const result = await aibolit(path);
     expect(result).toBe('Your code is perfect');
+  });
+});
+
+describe('aibolit_top', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
+  });
+
+  test('returns up to five ranked issues', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
+    const path = join(tmp, 'Test.java');
+    writeFileSync(path, 'public class Test {}');
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecSync.mockReturnValueOnce(Buffer.from(
+      'Test.java[10]: First issue (P1: 7.0)\n' +
+      'Test.java[20]: Second issue (P2: 5.0)\n' +
+      'Test.java[30]: Third issue (P3: 4.0)\n' +
+      'Test.java[40]: Fourth issue (P4: 3.0)\n' +
+      'Test.java[50]: Fifth issue (P5: 2.0)\n' +
+      'Test.java[60]: Sixth issue (P6: 1.0)\n'
+    ));
+    try {
+      const result = await aibolit_top(path);
+      expect(result).toContain('First issue');
+      expect(result).toContain('Fifth issue');
+      expect(result).not.toContain('Sixth issue');
+      const firstAt = result.indexOf('First issue');
+      const secondAt = result.indexOf('Second issue');
+      expect(firstAt).toBeLessThan(secondAt);
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  test('returns perfect message when no issues found', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
+    const path = join(tmp, 'Test.java');
+    writeFileSync(path, 'public class Test {}');
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    try {
+      const result = await aibolit_top(path);
+      expect(result).toBe('Your code is perfect');
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  test('returns fewer than five when only a few issues exist', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
+    const path = join(tmp, 'Test.java');
+    writeFileSync(path, 'public class Test {}');
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecSync.mockReturnValueOnce(Buffer.from(
+      'Test.java[10]: Only issue (P1: 7.0)\n'
+    ));
+    try {
+      const result = await aibolit_top(path);
+      expect(result).toContain('Only issue');
+      expect(result).toContain('top 1 design issues');
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
+  });
+
+  test('handles non-existent file', async () => {
+    const path = '/path/to/nonexistent/file.java';
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    const result = await aibolit_top(path);
+    expect(result).toBe(`File does not exist: ${path}`);
   });
 });
