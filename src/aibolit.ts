@@ -1,7 +1,7 @@
 // SPDX-FileCopyrightText: Copyright (c) 2025 Yegor Bugayenko
 // SPDX-License-Identifier: MIT
 
-import { execSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
 import fs from 'fs';
 import semver from 'semver';
 import { to_gpt } from './to_gpt';
@@ -32,11 +32,16 @@ export const aibolit = async function(path: string): Promise<string> {
   if (!fs.existsSync(path)) {
     return `File does not exist: ${path}`;
   }
-  const warns = execSync(
-    `
-    /bin/bash -c "set -o pipefail; (python3 -m aibolit check --full --filenames ${path} || true)"
-    `
-  ).toString();
+  let warns: string;
+  try {
+    warns = execFileSync(
+      'python3',
+      ['-m', 'aibolit', 'check', '--full', '--filenames', path]
+    ).toString();
+  } catch (e) {
+    const err = e as { stdout?: Buffer | string };
+    warns = err.stdout == null ? '' : err.stdout.toString();
+  }
   const lines = warns.trim().split('\n').filter(line => line.trim());
   const parsed = lines.map(line => {
     const match = line.match(/^.+?\[(\d+)\]:\s(.+?)\s\(P\d+:\s(\d+(?:\.\d+)?)\)$/);
