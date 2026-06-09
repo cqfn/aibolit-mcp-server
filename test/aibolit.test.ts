@@ -8,11 +8,13 @@ import { join } from 'path';
 import { tmpdir } from 'os';
 
 jest.mock('child_process', () => ({
+  execFileSync: jest.fn(),
   execSync: jest.fn()
 }));
 
-import { execSync } from 'child_process';
+import { execFileSync, execSync } from 'child_process';
 const mockExecSync = execSync as jest.MockedFunction<typeof execSync>;
+const mockExecFileSync = execFileSync as jest.MockedFunction<typeof execFileSync>;
 
 describe('aibolit', () => {
   beforeEach(() => {
@@ -35,7 +37,7 @@ describe('aibolit', () => {
       `
     );
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    mockExecFileSync.mockReturnValueOnce(Buffer.from(''));
     try {
       const issue = await aibolit(path);
       expect(issue).toContain('Your code is perfect');
@@ -60,7 +62,7 @@ describe('aibolit', () => {
       `
     );
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-    mockExecSync.mockReturnValueOnce(
+    mockExecFileSync.mockReturnValueOnce(
       Buffer.from('Test.java[44]: Missing final keyword (P13: 5.0)\n'));
     try {
       const issue = await aibolit(path);
@@ -116,7 +118,7 @@ describe('aibolit', () => {
 
   test('executes normally when version is exactly required', async () => {
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    mockExecFileSync.mockReturnValueOnce(Buffer.from(''));
     const path = '/tmp/test.java';
     writeFileSync(path, 'public class Test {}');
     const result = await aibolit(path);
@@ -125,7 +127,7 @@ describe('aibolit', () => {
 
   test('executes normally when version is newer than required', async () => {
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.4.0\n'));
-    mockExecSync.mockReturnValueOnce(Buffer.from(''));
+    mockExecFileSync.mockReturnValueOnce(Buffer.from(''));
     const path = '/tmp/test.java';
     writeFileSync(path, 'public class Test {}');
     const result = await aibolit(path);
@@ -173,11 +175,53 @@ describe('aibolit', () => {
 
   test('handles aibolit output with invalid warning format', async () => {
     mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
-    mockExecSync.mockReturnValueOnce(
+    mockExecFileSync.mockReturnValueOnce(
       Buffer.from('Invalid warning format\nAnother invalid line\n'));
     const path = '/tmp/test.java';
     writeFileSync(path, 'public class Test {}');
     const result = await aibolit(path);
     expect(result).toBe('Your code is perfect');
+  });
+
+  test('parses warnings captured on stdout when aibolit exits non-zero', async () => {
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecFileSync.mockImplementationOnce(() => {
+      const err = new Error('Command failed') as Error & { stdout: Buffer };
+      err.stdout = Buffer.from('Test.java[44]: Missing final keyword (P13: 5.0)\n');
+      throw err;
+    });
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    const result = await aibolit(path);
+    expect(result).not.toContain('Your code is perfect');
+    expect(result).toContain('Missing final keyword');
+  });
+
+  test('returns perfect code when aibolit throws without stdout', async () => {
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecFileSync.mockImplementationOnce(() => {
+      throw new Error('Command failed');
+    });
+    const path = '/tmp/test.java';
+    writeFileSync(path, 'public class Test {}');
+    const result = await aibolit(path);
+    expect(result).toBe('Your code is perfect');
+  });
+
+  test('passes path as separate argv element so shell metacharacters do not execute', async () => {
+    const tmp = mkdtempSync(join(tmpdir(), 'aibolit-test-'));
+    const path = join(tmp, 'Test.java; touch pwned.java');
+    writeFileSync(path, 'public class Test {}');
+    mockExecSync.mockReturnValueOnce(Buffer.from('aibolit 1.3.0\n'));
+    mockExecFileSync.mockReturnValueOnce(Buffer.from(''));
+    try {
+      await aibolit(path);
+      expect(mockExecFileSync).toHaveBeenCalledWith(
+        'python3',
+        ['-m', 'aibolit', 'check', '--full', '--filenames', path]
+      );
+    } finally {
+      rmSync(tmp, { recursive: true, force: true });
+    }
   });
 });
